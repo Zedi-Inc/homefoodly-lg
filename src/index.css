@@ -1,0 +1,77 @@
+@import url('satoshi.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  line-height: 1.5;
+  font-weight: 400;
+
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #FDFAFF;
+  color: black;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  box-sizing: content-box;
+}
+
+.PhoneInputInput {
+  background-color: transparent;
+  outline: none;
+}
+
+@layer components {
+  .radioLabel {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+  }
+
+  .radioInput {
+    @apply sr-only;
+  }
+
+  .checkmark {
+    @apply flex-shrink-0 w-6 h-6 border border-gray-400 rounded-full mr-3 flex items-center justify-center;
+  }
+
+  .radioLabel:hover .checkmark {
+    @apply border-gray-600;
+  }
+
+  .radioInput:checked + .checkmark {
+    @apply bg-[#ffffff] border-[#51BA65];
+  }
+
+  .checkmark:after {
+    content: "";
+    display: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    /* border: 1px solid #bd0f26; */
+    background-color: #51BA65;
+  }
+
+  .radioInput:checked + .checkmark:after {
+    @apply block;
+  }
+
+  .boxShadow {
+    box-shadow: 0px 4px 16px 0px rgba(64, 38, 77, 0.05);
+  }
+}
+
