@@ -175,9 +175,7 @@ export default function Form() {
                   <option value="">Select a country</option>
                   {countries.map((data) => {
                     return (
-                      <>
-                        <option value={data?.flag} key={data?.cca2}>{data?.name}</option>
-                      </>
+                        <option value={data?.name} key={data?.cca2}>{data?.name}</option>
                     );
                   })}
                 </select>
