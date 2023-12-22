@@ -3,14 +3,41 @@ import React, { useState } from "react";
 import PhoneInput from "react-phone-number-input/react-hook-form";
 import "react-phone-number-input/style.css";
 import { useForm } from "react-hook-form";
-// import { isValid, z } from "zod";
+import { z } from "zod";
 import { useNavigate } from "react-router-dom";
-import CountrySelect from "react-simple-country-select";
-import countries from "../countries.json";
-import { arrowLeftIcon } from "../assets/img";
-import { Link } from "react-router-dom";
-
-// import ReactFlagsSelect from "react-flags-select";
+import ReactFlagsSelect from "react-flags-select";
+import ReactCountryFlagsSelect from "react-country-flags-select";
+const schema = z.object({
+  businessName: z
+    .string({
+      invalid_type_error: "Business name is required",
+    })
+    .max(70, "Business Name must not exceed 70 characters"),
+  contactPerson: z
+    .string({
+      invalid_type_error: "This feild is required",
+    })
+    .max(70, "Contact Name must not exceed 70 characters"),
+  email: z.string().email(),
+  phoneNumber: z
+    .string({
+      invalid_type_error: "Phone number is required",
+    })
+    .max(16, "Enter a valid phone number"),
+  country: z.string({
+    invalid_type_error: "This feild is required",
+    aboutBusiness: z
+      .string({
+        invalid_type_error: "This feild is required",
+      })
+      .max(200, "Not more than 200 words is required"),
+    whyHomeFoodly: z
+      .string({
+        invalid_type_error: "This feild is required",
+      })
+      .max(200, "Not more than 200 words is required"),
+  }),
+});
 
 export default function Form() {
   const [selected, setSelected] = useState("");
@@ -18,19 +45,15 @@ export default function Form() {
   const [formData, setFormData] = useState(null);
 
   const navigate = useNavigate();
-  const requiredErrorMsg = "This field is required";
   const {
     register,
     handleSubmit,
-    setValue,
     control,
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
-    // resolver: zodResolver(schema),
-    mode: "all",
+    resolver: zodResolver(schema),
   });
-  console.log(errors);
 
   const onSubmitStep1 = async (data) => {
     console.log("Step 1 submitted:", data);
@@ -40,7 +63,6 @@ export default function Form() {
 
   const onSubmitStep2 = async (data) => {
     const mergedData = { ...formData, ...data };
-    console.log(mergedData);
     const baseId = "appAEMpGfMUQgBnys";
     const tableId = "tbltWtBHujUl5FpaL";
     const AUTH_KEY = "keykO1OzSeZMBcoGC";
@@ -77,25 +99,14 @@ export default function Form() {
         className="boxShadow bg-white relative w-full lg:max-w-[654px] mx-auto border-black p-[40px] flex flex-col gap-6 py-10 mt-4 rounded-3xl"
       >
         <div className="flex justify-between">
-          <div className="flex gap-2">
-            {/* <Link
-              to={"/"}
-              className={`w-8 items-center ${step === 1 ? "hidden" : "block"}`}
-            >
-              <img src={arrowLeftIcon} alt="" />
-            </Link> */}
-            <h4 className="font-satoshi-bold text-xl leading-8">
-              Vendor Registration Form
-            </h4>
-          </div>
+          <h4 className="font-satoshi-bold text-xl leading-8">
+            Vendor Registration Form
+          </h4>
           <p className="text-[#8A8F99]">
-            Page{" "}
-            <span className="text-[#51BA65]">{step === 1 ? "1" : "2"}</span> of{" "}
-            <span>2</span>
+            Page <span className="text-[#51BA65]">1</span> of <span>2</span>
           </p>
         </div>
-
-        {step === 1 && (
+        <div>
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <label className="text-xs text-[#8A8F99]" htmlFor="businessName">
@@ -104,8 +115,9 @@ export default function Form() {
               <input
                 className="items-start p-4 bg-[#F2F2F5] rounded-3xl outline-none outline-1 focus:outline-[#51BA65] text-[#8A8F99] font-normal"
                 type="text"
+                {...register("businessName")}
+                name="businessName"
                 id="businessName"
-                {...register("businessName", { required: requiredErrorMsg })}
                 placeholder="Enix Grocery"
               />
               {errors.businessName && (
@@ -119,8 +131,9 @@ export default function Form() {
               <input
                 className="items-start p-4 bg-[#F2F2F5] rounded-3xl outline-none outline-1 focus:outline-[#51BA65] text-[#8A8F99] font-normal"
                 type="text"
+                {...register("contactPerson")}
+                name="contactPerson"
                 id="contactPerson"
-                {...register("contactPerson", { required: requiredErrorMsg })}
                 placeholder="John Doe"
               />
               {errors.contactPerson && (
@@ -134,8 +147,9 @@ export default function Form() {
               <input
                 className="items-start p-4 bg-[#F2F2F5] rounded-3xl outline-none outline-1 focus:outline-[#51BA65] text-[#8A8F99] font-normal"
                 type="email"
+                {...register("email")}
+                name="email"
                 id="email"
-                {...register("email", { required: requiredErrorMsg })}
                 placeholder="johndoe@example.com"
               />
               {errors.email && (
@@ -149,51 +163,52 @@ export default function Form() {
                 </label>
                 <PhoneInput
                   className="items-start p-4 bg-[#F2F2F5] rounded-3xl outline-none outline-1 focus:outline-[#51BA65] text-[#8A8F99] font-normal"
-                  id="phoneNumber"
                   name="phoneNumber"
+                  id="phoneNumber"
                   control={control}
                   international={true}
                   defaultCountry="NG"
                   placeholder="+1 234 567 890"
-                  minlength="10"
-                  required
                 />
                 {errors.phoneNumber && (
-                  <p className="text-red-600 text-xs">{requiredErrorMsg}</p>
+                  <p className="text-red-600 text-xs">{`${errors.phoneNumber?.message}`}</p>
                 )}
               </div>
               <div className="flex flex-col w-full gap-2">
                 <label className="text-xs text-[#8A8F99]" htmlFor="country">
                   Country of Operation
                 </label>
-                <CountrySelect
-                  className="items-start p-4 bg-[#F2F2F5] rounded-3xl outline-none outline-1 focus:outline-[#51BA65] text-[#8A8F99] font-normal"
-                  option={({ cca2, flag, name, code }) => (
-                    <option value={name} key={cca2}>
-                      {`${name}`}
-                    </option>
-                  )}
-                  required
+                <ReactCountryFlagsSelect
+                  id="country"
                   name="country"
+                  selected={selected}
+                  searchPlaceholder="Search Country"
+                  selectPlaceholder="Select Country"
+                  classes={{
+                    container:
+                      "my-custom-container-style flex items-center p-4 bg-[#F2F2F5] rounded-3xl outline-none outline-1 focus:outline-[#51BA65] text-[#8A8F99] font-normal",
+                    clearIcon: false,
+                  }}
+                  onSelect={(code) => setSelected(code)}
                 />
                 {errors.country && (
-                  <p className="text-red-600 text-xs">{`${requiredErrorMsg}`}</p>
+                  <p className="text-red-600 text-xs">{`${errors.country?.message}`}</p>
                 )}
               </div>
             </div>
-
-            <div className="mt-3">
-              <button
-                type="submit"
-                className="bg-[#51BA65] w-full p-4 text-white font-satoshi-bold rounded-[24px]"
-              >
-                Continue
-              </button>
-            </div>
+            {step === 1 && (
+              <div className="mt-3">
+                <button
+                  className="bg-[#51BA65] w-full p-4 text-white font-satoshi-bold rounded-[24px]"
+                  type="submit"
+                >
+                  Continue
+                </button>
+              </div>
+            )}
           </div>
-        )}
-
-        {step === 2 && formData && (
+        </div>
+        {step === 1 && (
           <div className="formPart2 flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <label className="text-xs text-[#8A8F99]" htmlFor="aboutBusiness">
@@ -201,44 +216,44 @@ export default function Form() {
               </label>
               <textarea
                 className="items-start p-4 bg-[#F2F2F5] rounded-3xl outline-none outline-1 focus:outline-[#51BA65] w-full text-[#8A8F99] font-normal"
+                {...register("aboutBusiness")}
+                name="aboutBusiness"
                 id="aboutBusiness"
                 rows="5"
                 cols="66"
                 spellCheck
-                placeholder="Please type your answer here..."
-                {...register("aboutBusiness", { required: requiredErrorMsg })}
-              ></textarea>
+              >
+                Please type your answer here...
+              </textarea>
               {errors.aboutBusiness && (
                 <p className="text-red-600 text-xs">{`${errors.aboutBusiness?.message}`}</p>
               )}
             </div>
-
             <div className="flex flex-col gap-2">
               <label className="text-xs text-[#8A8F99]" htmlFor="whyHomeFoodly">
                 Why do you want to join HomeFoodly?
               </label>
               <textarea
                 className="items-start p-4 bg-[#F2F2F5] rounded-3xl outline-none outline-1 focus:outline-[#51BA65] w-full text-[#8A8F99] font-normal"
+                {...register("whyHomeFoodly")}
+                name="whyHomeFoodly"
                 id="whyHomeFoodly"
                 rows="5"
                 cols="66"
                 spellCheck
-                placeholder="Please type your answer here..."
-                {...register("whyHomeFoodly", {
-                  required: requiredErrorMsg,
-                })}
-              ></textarea>
-              {errors.whyHomeFoodly && (
-                <p className="text-red-600 text-xs">{`${errors.whyHomeFoodly?.message}`}</p>
+              >
+                Please type your answer here...
+              </textarea>
+              {errors.aboutBusiness && (
+                <p className="text-red-600 text-xs">{`${errors.aboutBusiness?.message}`}</p>
               )}
             </div>
-
             <button
               disabled={isSubmitting}
               className="bg-[#51BA65] w-full p-4 text-white font-satoshi-bold rounded-[24px]"
               type="submit"
             >
-              {isSubmitting ? "submitting..." : "Submit Response"}
+              Submit Response
             </button>
           </div>
         )}

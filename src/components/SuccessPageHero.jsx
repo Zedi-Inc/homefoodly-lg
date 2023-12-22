@@ -1,11 +1,12 @@
-import React from 'react'
-import { logoIcon } from '../assets/img'
+import React from "react";
+import { arrowRightIcon, logoIcon } from "../assets/img";
+import { Link } from "react-router-dom";
 
 export default function SuccessPageHero() {
   return (
     <div className="w-full min-h-[50vh]">
-      <div className="min-h-[50vh] relative text-black bg-cover">
-        <div className="absolute top-0 w-full z-10 pt-8 px-6 pb-8">
+      <div className="relative text-black">
+        <div className="absolute top-0 w-full z-10 px-6 py-8">
           <div className="flex gap-2 justify-center items-center lg:justify-start font-satoshi-bold lg:ml-10 text-2xl text-[#51BA65]">
             <img src={logoIcon} alt="" />
             HomeFoodly
@@ -18,12 +19,11 @@ export default function SuccessPageHero() {
               You’ll be notified with updates on HomeFoodly and will be the
               first to know once we’re live!
             </p>
+            <Link className="relative bg-[#51BA65] w-fit text-white font-satoshi-bold rounded-3xl py-3 pl-6 pr-12 mt-4" to={'/'}>Return Home
+            <img className="absolute right-0 top-0" src={arrowRightIcon} alt="" /></Link>
           </div>
         </div>
-        {/* <div className="w-[125%] ml-[-10%]">
-          <img src={girlImg} alt="" className="hidden lg:block w-full" />
-        </div> */}
       </div>
     </div>
-  )
+  );
 }
