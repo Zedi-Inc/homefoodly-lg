@@ -74,7 +74,7 @@ export default function Form() {
         onSubmit={
           step === 1 ? handleSubmit(onSubmitStep1) : handleSubmit(onSubmitStep2)
         }
-        className="boxShadow bg-white relative w-full lg:max-w-[654px] mx-auto border-black p-[40px] flex flex-col gap-6 py-10 mt-4 rounded-3xl"
+        className="boxShadow bg-white relative w-full lg:max-w-[654px] mx-auto border-black p-4 md:p-[40px] flex flex-col gap-6 py-10 mt-4 rounded-3xl"
       >
         <div className="flex justify-between">
           <div className="flex gap-2">
